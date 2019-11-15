@@ -1,0 +1,6 @@
+app-name: peer-pressure
+secret-key: 'very-secret-key'
+webhook-path: 'webhook'
+webhook-method: 'POST'
+notification-medium:
+    - slack

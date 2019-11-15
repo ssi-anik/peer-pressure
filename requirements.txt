@@ -1,0 +1,3 @@
+Flask==1.1.1
+python-benedict==0.13.0
+dotty-dict==1.2.1

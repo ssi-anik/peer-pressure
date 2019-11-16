@@ -5,8 +5,8 @@ from benedict import benedict
 from flask import Flask, make_response, jsonify, request
 
 from extension.hook_processor import HookProcessor
-
 # load configuration
+from extension.mediums import Slack, Email
 
 try:
     conf = benedict.from_yaml('configuration.yaml')
@@ -26,6 +26,18 @@ method = method if isinstance(method, list) else [method]
 name = conf['app-name'] if 'app-name' in conf else __name__
 # get the secret key for incoming requests to match
 secret = conf['secret-key'] if 'secret-key' in conf else None
+# get the notification mediums
+mediums = conf['notification-medium'] if 'notification-medium' in conf else 'slack'
+mediums = mediums if isinstance(mediums, list) else [mediums]
+
+available_mediums = {
+    'slack': Slack, 'email': Email
+}
+
+unsupported_medium = [item for item in mediums if item not in available_mediums.keys()]
+
+if len(unsupported_medium):
+    raise Exception('Unsupported mediums: {}'.format(", ".join(unsupported_medium)))
 
 # Init flask app
 app = Flask(name)
@@ -78,6 +90,8 @@ def handler():
         data = request.get_json(silent=True)
         event = HookProcessor(data).process()
         pr = event.handle()
+        for medium in mediums:
+            available_mediums[medium](conf['users'], pr).notify()
     except Exception as e:
         return make_response(jsonify({
             'error': True,

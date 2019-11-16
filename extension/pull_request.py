@@ -16,12 +16,6 @@ class PullRequest(object):
         self.merged_at = ''
         self.comment = ''
 
-    # def __setattr__(self, key, value):
-    #     if key in self:
-    #         self.key = value
-    #
-    #     return self
-
     def __str__(self):
         return 'repo_name => {} - action => {} - number => {} - by => {} - state => {} - title => {} - url => {} ' \
                '- assignee => {} - reviewers => {} - removed_reviewer => {} - label => {} - comment - {} ' \

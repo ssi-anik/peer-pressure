@@ -46,6 +46,8 @@ class SubmittedEventHandler(EventHandler):
         self.pr.by = self.data['review.user.login'] if 'login' in (self.data['review.user'] or {}) else ''
         self.pr.state = self.data['review.state']
         self.pr.comment = self.data['review.body']
+        self.pr.assignee = self.data['pull_request.assignee.login'] if 'login' in (
+                self.data['pull_request.assignee'] or []) else ''
 
         return self.pr
 

@@ -1,3 +1,5 @@
+import os
+
 from flask import request, make_response, jsonify
 
 from extension.hook_processor import HookProcessor
@@ -50,3 +52,10 @@ def handler():
         'error': False,
         'message': 'Handled webhook successfully.'
     }), 202)
+
+
+if __name__ == '__main__':
+    os.environ['FLASK_ENV'] = configuration['app_env'] if 'app_env' in configuration else \
+        "development" if configuration['debug'] else "production"
+
+    app.run(host=configuration['host'], port=configuration['port'], debug=configuration['debug'])

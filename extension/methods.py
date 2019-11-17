@@ -13,6 +13,10 @@ def get_app_configuration():
     except Exception:
         raise Exception("'configuration.yaml' file missing")
 
+    host = conf['host'] if 'host' in conf else '0.0.0.0'
+    port = conf['port'] if 'port' in conf else 80
+    debug = bool(conf['debug'] if 'debug' in conf else False)
+
     # Get the webhook receiver path
     path = "/{}".format((conf['webhook-path'] if 'webhook-path' in conf else 'hook').strip('/'))
 
@@ -34,10 +38,16 @@ def get_app_configuration():
 
     unsupported_medium = [item for item in mediums if item not in available_mediums.keys()]
 
+    app_env = conf['app-env'] if 'app-env' in conf else 'production'
+
     if len(unsupported_medium):
         raise Exception('Unsupported mediums: {}'.format(", ".join(unsupported_medium)))
 
     return {
+        'app_env': app_env,
+        'host': host,
+        'port': port,
+        'debug': debug,
         'name': name,
         'path': path,
         'methods': method,

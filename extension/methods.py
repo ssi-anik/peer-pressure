@@ -1,10 +1,11 @@
 from benedict import benedict
 from flask import Flask
 
-from extension.mediums import Slack, Email
+from extension.mediums import Slack
 
 DEFAULT_MESSAGES = {
-    'opened': "New PR #{number} with `{title}` on {repo} is received by {by} to {base} from {head}. Assigns {assignees}. Asks {requested_reviewers} to review the PR. {url}",
+    'opened': "New PR #{number} with `{title}` on {repo} is received by {by} to {base} from {head}. "
+              "Assigns {assignees}. Asks {requested_reviewers} to review the PR. {url}",
     'commented': "PR #{number} on {repo} by {by} receives a comment from {actor} - `{comment}`.",
     'assigned': "PR #{number} on {repo} by {by} - {actor} assigns assignees {assignees}.",
     'labeled': "PR #{number} on {repo}, {actor} labels with `{labels}`.",
@@ -46,7 +47,7 @@ def get_app_configuration():
     mediums = mediums if isinstance(mediums, list) else [mediums]
 
     available_mediums = {
-        'slack': Slack, 'email': Email
+        'slack': Slack
     }
 
     unsupported_medium = [item for item in mediums if item not in available_mediums.keys()]
@@ -57,7 +58,7 @@ def get_app_configuration():
         raise Exception('Unsupported mediums: {}'.format(", ".join(unsupported_medium)))
 
     slack_users = conf['users.slack'] if ['users', 'slack'] in conf and conf['users.slack'] else {}
-    email_users = conf['users.email'] if ['users', 'email'] in conf and conf['users.email'] else {}
+    # email_users = conf['users.email'] if ['users', 'email'] in conf and conf['users.email'] else {}
 
     custom_messages = conf['messages'] if 'messages' in conf else {}
     messages = {**DEFAULT_MESSAGES, **custom_messages}
@@ -74,10 +75,18 @@ def get_app_configuration():
         'mediums': mediums,
         'available_mediums': available_mediums,
         'slack_users': slack_users,
-        'email_users': email_users,
+        # 'email_users': email_users,
         'messages': messages,
+        'slack_url': conf['slack-url'] if 'slack-url' in conf else '',
+        'slack_channel': conf['slack-channel'] if 'slack-channel' in conf else 'random',
+        'slack_username': conf['slack-username'] if 'slack-username' in conf else name,
+        'slack_emoji': conf['slack-emoji'] if 'slack-emoji' in conf else ':gun:',
     }
 
 
 def get_flask_instance(name) -> Flask:
     return Flask(name)
+
+
+def get_user_mapped_data(users, username):
+    return users.get(username) or username

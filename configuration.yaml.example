@@ -8,13 +8,17 @@ webhook-path: 'webhook'
 webhook-method: 'POST'
 notification-medium:
     - slack
-    # - email
+slack-url: "https://slack-url-here"
+slack-channel: 'slack-channel'
+slack-username: 'bot-name'
+slack-emoji: ':tada:'
+
 users:
     slack:
         git-user-name: slack-name
         git-user-2-name: slack-name-2
-    email:
-        git-user-name: git.user.name@example.com
+#    email:
+#        git-user-name: git.user.name@example.com
 
 messages:
     openes: "New PR #{number} with `{title}` on {repo} is received by {by} to {base} from {head}. Assigns {assignees}. Asks {requested_reviewers} to review the PR. {url}"

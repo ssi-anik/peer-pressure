@@ -2,9 +2,9 @@ import os
 
 from flask import request, make_response, jsonify
 
-from extension.hook_processor import HookProcessor
 from extension.methods import get_app_configuration, get_flask_instance
 from extension.middlewares import validate_signature, expects_json
+from extension.processors import HookProcessor, SlackProcessor
 
 configuration = get_app_configuration()
 
@@ -39,10 +39,18 @@ def handler():
     try:
         data = request.get_json(silent=True)
         event = HookProcessor(data).process()
-        pr = event.handle()
+        pull_request = event.handle()
+        processed_pull_request = SlackProcessor(pull_request, configuration['slack_users']).process()
 
-        # for medium in configuration['mediums']:
-        #     configuration['available_mediums'][medium](configuration['users'], pr).notify()
+        if 'slack' in configuration['mediums']:
+            slack_medium = configuration['available_mediums']['slack']
+            slack_conf = {
+                'url': configuration['slack_url'],
+                'channel': configuration['slack_channel'],
+                'username': configuration['slack_username'],
+                'emoji': configuration['slack_emoji'],
+            }
+            slack_medium(processed_pull_request, configuration['messages'], slack_conf).notify()
     except Exception as e:
         return make_response(jsonify({
             'error': True,

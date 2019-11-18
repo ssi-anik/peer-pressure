@@ -3,6 +3,19 @@ from flask import Flask
 
 from extension.mediums import Slack, Email
 
+DEFAULT_MESSAGES = {
+    'opened': "New PR #{number} with `{title}` on {repo} is received by {by} to {base} from {head}. Assigns {assignees}. Asks {requested_reviewers} to review the PR. {url}",
+    'commented': "PR #{number} on {repo} by {by} receives a comment from {actor} - `{comment}`.",
+    'assigned': "PR #{number} on {repo} by {by} - {actor} assigns assignees {assignees}.",
+    'labeled': "PR #{number} on {repo}, {actor} labels with `{labels}`.",
+    'review_requested': "PR #{number} on {repo} by {by} - {actor} asks {requested_reviewers} to review the PR.",
+    'review_request_removed': "PR #{number} on {repo} by {by} - {actor} removes {removed_reviewer} as a reviewer.",
+    'approved': ":tada: - PR #{number} on {repo} by {by} is now approved by {actor}. {assignees}, go on!",
+    'changes_requested': "PR #{number} on {repo} by {by} - {actor} commented {comment} to make some changes.",
+    'merged': "PR #{number} on {repo} is merged on {base} by {actor} at {at}. :cherries:.",
+    'closed': "PR #{number} on {repo} is closed by {actor} and not merged. :cry:.",
+}
+
 
 def get_app_configuration():
     try:
@@ -43,6 +56,12 @@ def get_app_configuration():
     if len(unsupported_medium):
         raise Exception('Unsupported mediums: {}'.format(", ".join(unsupported_medium)))
 
+    slack_users = conf['users.slack'] if ['users', 'slack'] in conf and conf['users.slack'] else {}
+    email_users = conf['users.email'] if ['users', 'email'] in conf and conf['users.email'] else {}
+
+    custom_messages = conf['messages'] if 'messages' in conf else {}
+    messages = {**DEFAULT_MESSAGES, **custom_messages}
+
     return {
         'app_env': app_env,
         'host': host,
@@ -54,6 +73,9 @@ def get_app_configuration():
         'secret': secret,
         'mediums': mediums,
         'available_mediums': available_mediums,
+        'slack_users': slack_users,
+        'email_users': email_users,
+        'messages': messages,
     }
 
 

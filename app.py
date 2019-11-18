@@ -40,6 +40,7 @@ def handler():
         data = request.get_json(silent=True)
         event = HookProcessor(data).process()
         pr = event.handle()
+
         # for medium in configuration['mediums']:
         #     configuration['available_mediums'][medium](configuration['users'], pr).notify()
     except Exception as e:
@@ -55,7 +56,14 @@ def handler():
 
 
 if __name__ == '__main__':
-    os.environ['FLASK_ENV'] = configuration['app_env'] if 'app_env' in configuration else \
-        "development" if configuration['debug'] else "production"
+    environment = configuration['app_env'] if 'app_env' in configuration else "development" if \
+        configuration['debug'] else "production"
 
-    app.run(host=configuration['host'], port=configuration['port'], debug=configuration['debug'])
+    os.environ['FLASK_ENV'] = environment
+
+    if environment == 'production':
+        from waitress import serve
+
+        serve(app, host=configuration['host'], port=configuration['port'])
+    else:
+        app.run(host=configuration['host'], port=configuration['port'], debug=configuration['debug'])

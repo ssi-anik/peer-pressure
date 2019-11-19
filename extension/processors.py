@@ -40,25 +40,25 @@ class SlackProcessor(object):
     def process(self):
         # Prepend @ if there is any value returned, otherwise,
         if self.pr.by_git_name:
-            self.pr.by = '@{}'.format(get_user_mapped_data(self.users, self.pr.by_git_name))
+            self.pr.by = '<@{}>'.format(get_user_mapped_data(self.users, self.pr.by_git_name))
 
         if self.pr.actor_git_name:
-            self.pr.actor = '@{}'.format(get_user_mapped_data(self.users, self.pr.actor_git_name))
+            self.pr.actor = '<@{}>'.format(get_user_mapped_data(self.users, self.pr.actor_git_name))
 
         if self.pr.removed_reviewer_git_name:
-            self.pr.removed_reviewer = '@{}'.format(get_user_mapped_data(self.users, self.pr.removed_reviewer_git_name))
+            self.pr.removed_reviewer = '<@{}>'.format(get_user_mapped_data(self.users, self.pr.removed_reviewer_git_name))
 
         if len(self.pr.assignees_array):
             assignees = []
             for assignee in self.pr.assignees_array:
-                assignees.append('@{}'.format(get_user_mapped_data(self.users, assignee)))
+                assignees.append('<@{}>'.format(get_user_mapped_data(self.users, assignee)))
 
             self.pr.assignees = ', '.join(assignees)
 
         if len(self.pr.requested_reviewers_array):
             reviewers = []
             for reviewer in self.pr.requested_reviewers_array:
-                reviewers.append('@{}'.format(get_user_mapped_data(self.users, reviewer)))
+                reviewers.append('<@{}>'.format(get_user_mapped_data(self.users, reviewer)))
 
             self.pr.requested_reviewers = ', '.join(reviewers)
 

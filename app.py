@@ -3,7 +3,7 @@ import os
 from flask import request, make_response, jsonify
 
 from extension.methods import get_app_configuration, get_flask_instance
-from extension.middlewares import validate_signature, expects_json
+from extension.middlewares import validate_signature, expects_json, excepted_events
 from extension.processors import HookProcessor, SlackProcessor
 
 configuration = get_app_configuration()
@@ -33,6 +33,7 @@ def exception(u_path):
 
 
 @app.route(configuration['path'], methods=configuration['methods'])
+@excepted_events(['pull_request', 'pull_request_review'])
 @validate_signature(configuration['secret'])
 @expects_json
 def handler():

@@ -27,6 +27,28 @@ def validate_signature(secret):
     return check_secret
 
 
+def excepted_events(events):
+    def check_event(f):
+        @wraps(f)
+        def compare_event(*args, **kwargs):
+            if events:
+                sent_event = request.headers.get('X-GitHub-Event', '').strip()
+                if not hasattr(events, '__iter__'):
+                    raise Exception('Invalid events list. expects __iter__ object')
+                if sent_event not in events:
+                    return abort(make_response(jsonify({
+                        'error': True,
+                        'message': 'Unauthorized events',
+                        'event': sent_event
+                    }), 401))
+
+            return f(*args, **kwargs)
+
+        return compare_event
+
+    return check_event
+
+
 def expects_json(f):
     @wraps(f)
     def check_if_json(*args, **kwargs):

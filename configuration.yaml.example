@@ -27,7 +27,7 @@ messages:
     labeled: "PR #{number} on {repo}, {actor} labels with `{labels}`."
     review_requested: "PR #{number} on {repo} by {by} - {actor} asks {requested_reviewers} to review the PR."
     review_request_removed: "PR #{number} on {repo} by {by} - {actor} removes {removed_reviewer} as a reviewer."
-    approved: ":tada: - PR #{number} on {repo} by {by} is now approved by {actor}. {assignees}, go on!"
+    approved: ":tada: - PR #{number} on {repo} by {by} is now approved by {actor}. {assignees}, go on! May be you can now merge the PR."
     changes_requested: "PR #{number} on {repo} by {by} - {actor} commented {comment} to make some changes."
     merged: "PR #{number} on {repo} is merged on {base} by {actor} at {at}. :cherries:."
     closed: "PR #{number} on {repo} is closed by {actor} and not merged. :cry:."

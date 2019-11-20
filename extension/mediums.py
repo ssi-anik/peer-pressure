@@ -22,7 +22,7 @@ class Slack(Medium):
         self.conf = conf
 
     def notify(self):
-        message = '@channel, something happened :gun:'
+        message = '@channel, something happened :gun: on {url}'.format(**self.pr.get_as_dict())
         if self.pr.action == 'opened':
             message = self.messages['opened'].format(**self.pr.get_as_dict())
         if self.pr.action == 'assigned':
@@ -34,7 +34,10 @@ class Slack(Medium):
         if self.pr.action == 'review_request_removed':
             message = self.messages['review_request_removed'].format(**self.pr.get_as_dict())
         if self.pr.action == 'closed':
-            message = self.messages['closed'].format(**self.pr.get_as_dict())
+            if self.pr.is_merged:
+                message = self.messages['merged'].format(**self.pr.get_as_dict())
+            else:
+                message = self.messages['closed'].format(**self.pr.get_as_dict())
         if self.pr.action == 'submitted':
             if self.pr.state == 'commented':
                 message = self.messages['commented'].format(**self.pr.get_as_dict())

@@ -7,4 +7,4 @@ WORKDIR /var/www/html
 RUN pip3 install -r requirements.txt
 COPY . /var/www/html
 EXPOSE 80
-CMD ["python", "app.py"]
+CMD ["python", "-u", "app.py"]

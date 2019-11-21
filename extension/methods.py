@@ -63,6 +63,21 @@ def get_app_configuration():
     custom_messages = conf['messages'] if 'messages' in conf else {}
     messages = {**DEFAULT_MESSAGES, **custom_messages}
 
+    active_events = conf['listen-events'] if 'listen-events' in conf else None
+    if not active_events or not hasattr(active_events, '__iter__'):
+        active_events = (
+            'opened',
+            'commented',
+            'assigned',
+            'labeled',
+            'review_requested',
+            'review_request_removed',
+            'approved',
+            'changes_requested',
+            'merged',
+            'closed',
+        )
+
     return {
         'app_env': app_env,
         'host': host,
@@ -81,6 +96,7 @@ def get_app_configuration():
         'slack_channel': conf['slack-channel'] if 'slack-channel' in conf else 'random',
         'slack_username': conf['slack-username'] if 'slack-username' in conf else name,
         'slack_emoji': conf['slack-emoji'] if 'slack-emoji' in conf else ':gun:',
+        'active_events': active_events,
     }
 
 

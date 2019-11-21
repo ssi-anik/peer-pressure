@@ -57,6 +57,13 @@ class SubmittedEventHandler(EventHandler):
             assignee['login'] for assignee in (self.data['pull_request.assignees'] or [])
         ]
 
+        if self.pr.state == 'approved':
+            self.pr.action = 'approved'
+        elif self.pr.state == 'commented':
+            self.pr.action = 'commented'
+        elif self.pr.state == 'changes_requested':
+            self.pr.action = 'changes_requested'
+
         return self.pr
 
 
@@ -100,5 +107,8 @@ class ClosedEventHandler(EventHandler):
                 self.data['pull_request.merged_by'] or {}
         ) else 'N/A'
         self.pr.merged_at = self.data['pull_request.merged_at'] or ''
+
+        if self.pr.is_merged:
+            self.pr.action = 'merged'
 
         return self.pr

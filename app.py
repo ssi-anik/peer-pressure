@@ -41,6 +41,14 @@ def handler():
         data = request.get_json(silent=True)
         event = HookProcessor(data).process()
         pull_request = event.handle()
+
+        if pull_request.action not in configuration['active_events']:
+            return make_response(jsonify({
+                'error': False,
+                'message': 'Not listening to event',
+                'event': pull_request.action
+            }), 200)
+
         processed_pull_request = SlackProcessor(pull_request, configuration['slack_users']).process()
 
         if 'slack' in configuration['mediums']:

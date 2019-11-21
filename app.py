@@ -33,7 +33,7 @@ def exception(u_path):
 
 
 @app.route(configuration['path'], methods=configuration['methods'])
-@excepted_events(['pull_request', 'pull_request_review'])
+@excepted_events(['pull_request', 'pull_request_review', 'ping'])
 @validate_signature(configuration['secret'])
 @expects_json
 def handler():

@@ -2,7 +2,7 @@ import hashlib
 from functools import wraps
 from hmac import new as hmac_new, compare_digest
 
-from flask import request, abort, make_response, jsonify
+from flask import request, make_response, jsonify
 
 
 def validate_signature(secret):
@@ -15,10 +15,10 @@ def validate_signature(secret):
                 )
 
                 if not compare_digest(digest, request.headers.get('X-Hub-Signature', '')):
-                    return abort(make_response(jsonify({
+                    return make_response(jsonify({
                         'error': True,
                         'message': 'Unauthorized request'
-                    }), 401))
+                    }), 401)
 
             return f(*args, **kwargs)
 
@@ -32,15 +32,22 @@ def excepted_events(events):
         @wraps(f)
         def compare_event(*args, **kwargs):
             if events:
-                sent_event = request.headers.get('X-GitHub-Event', '').strip()
+                received_event = request.headers.get('X-GitHub-Event', '').strip()
                 if not hasattr(events, '__iter__'):
                     raise Exception('Invalid events list. expects __iter__ object')
-                if sent_event not in events:
-                    return abort(make_response(jsonify({
+
+                if received_event not in events:
+                    return make_response(jsonify({
                         'error': True,
                         'message': 'Unauthorized events',
-                        'event': sent_event
-                    }), 401))
+                        'event': received_event
+                    }), 401)
+
+                if received_event == 'ping':
+                    return make_response(jsonify({
+                        'error': False,
+                        'message': 'pong'
+                    }), 202)
 
             return f(*args, **kwargs)
 
@@ -53,10 +60,10 @@ def expects_json(f):
     @wraps(f)
     def check_if_json(*args, **kwargs):
         if not request.is_json:
-            return abort(make_response(jsonify({
+            return make_response(jsonify({
                 'error': True,
                 'message': 'Form is only accepted for application/json'
-            }), 400))
+            }), 400)
 
         return f(*args, *kwargs)
 

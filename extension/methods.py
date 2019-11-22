@@ -32,10 +32,10 @@ def get_app_configuration():
     debug = bool(conf['debug'] if 'debug' in conf else False)
 
     # Get the webhook receiver path
-    path = "/{}".format((conf['webhook-path'] if 'webhook-path' in conf else 'hook').strip('/'))
+    path = "/{}".format((conf['webhook-path'] if 'webhook-path' in conf else 'webhook').strip('/'))
 
     # Get the webhook receiver method
-    method = conf['webhook-method'] if 'webhook-method' in conf else 'GET'
+    method = conf['webhook-method'] if 'webhook-method' in conf else 'POST'
     # Convert method to array if not
     method = method if isinstance(method, list) else [method]
     # app name

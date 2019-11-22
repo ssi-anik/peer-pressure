@@ -13,6 +13,18 @@ slack-channel: 'slack-channel'
 slack-username: 'bot-name'
 slack-emoji: ':tada:'
 
+listen-events:
+    - opened
+    - commented
+    - assigned
+    - labeled
+    - review_requested
+    - review_request_removed
+    - approved
+    - changes_requested
+    - merged
+    - closed
+
 users:
     slack:
         git-user-name: slack-id

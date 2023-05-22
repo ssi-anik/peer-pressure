@@ -2,4 +2,4 @@ Flask==2.3.2
 python-benedict==0.13.0
 dotty-dict==1.2.1
 waitress==2.1.2
-requests==2.22.0
+requests==2.31.0
